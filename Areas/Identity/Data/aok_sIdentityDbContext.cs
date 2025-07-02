@@ -11,8 +11,9 @@ public class aok_sIdentityDbContext : IdentityDbContext<IdentityUser>
     {
     }
 
-     public DbSet<Semester> Semesters { get; set; } = default!;
+    public DbSet<Semester> Semesters { get; set; } = default!;
     public DbSet<Department> Departments { get; set; } = default!;
+    public DbSet<Major> Majors { get; set; } = default!;
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -21,5 +22,10 @@ public class aok_sIdentityDbContext : IdentityDbContext<IdentityUser>
         .HasOne(d => d.Semester)
         .WithMany(s => s.Departments)
         .HasForeignKey(d => d.SemesterId);
+
+        builder.Entity<Major>()
+        .HasOne(m => m.Department)
+        .WithMany(d => d.Majors)
+        .HasForeignKey(m => m.DepartmentId);
     }
 }
