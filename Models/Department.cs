@@ -6,5 +6,6 @@ public class Department
     public int SemesterId { get; set; }
     public Semester Semester { get; set; } = default!;
 
-    //public ICollection<Major> Majors { get; set; } = new List<Major>();
+    public ICollection<Major> Majors { get; set; } = new List<Major>();
+    
 }
