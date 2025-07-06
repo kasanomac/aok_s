@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using aok_s.Areas.Identity.Data;
 
@@ -11,9 +12,11 @@ using aok_s.Areas.Identity.Data;
 namespace aok_s.Migrations
 {
     [DbContext(typeof(aok_sIdentityDbContext))]
-    partial class aok_sIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250705080301_AddClassAndClassMajor")]
+    partial class AddClassAndClassMajor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
