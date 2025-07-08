@@ -4,5 +4,5 @@ public class Class
     public string ClassName { get; set; }
 
     // Navigation property（中間テーブルへの）
-    public ICollection<ClassMajor> ClassMajors { get; set; }
+    public ICollection<ClassMajor> ClassMajors { get; set; } = new List<ClassMajor>();
 }
