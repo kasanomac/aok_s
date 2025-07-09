@@ -12,28 +12,22 @@ namespace aok_s.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Class",
+                name: "Classes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ClassName = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    MajorId = table.Column<int>(type: "int", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Class", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Class_Majors_MajorId",
-                        column: x => x.MajorId,
-                        principalTable: "Majors",
-                        principalColumn: "Id");
+                    table.PrimaryKey("PK_Classes", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ClassMajor",
+                name: "ClassMajors",
                 columns: table => new
                 {
                     ClassId = table.Column<int>(type: "int", nullable: false),
@@ -41,15 +35,15 @@ namespace aok_s.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClassMajor", x => new { x.ClassId, x.MajorId });
+                    table.PrimaryKey("PK_ClassMajors", x => new { x.ClassId, x.MajorId });
                     table.ForeignKey(
-                        name: "FK_ClassMajor_Class_ClassId",
+                        name: "FK_ClassMajors_Classes_ClassId",
                         column: x => x.ClassId,
-                        principalTable: "Class",
+                        principalTable: "Classes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ClassMajor_Majors_MajorId",
+                        name: "FK_ClassMajors_Majors_MajorId",
                         column: x => x.MajorId,
                         principalTable: "Majors",
                         principalColumn: "Id",
@@ -58,13 +52,8 @@ namespace aok_s.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Class_MajorId",
-                table: "Class",
-                column: "MajorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ClassMajor_MajorId",
-                table: "ClassMajor",
+                name: "IX_ClassMajors_MajorId",
+                table: "ClassMajors",
                 column: "MajorId");
         }
 
@@ -72,10 +61,10 @@ namespace aok_s.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ClassMajor");
+                name: "ClassMajors");
 
             migrationBuilder.DropTable(
-                name: "Class");
+                name: "Classes");
         }
     }
 }

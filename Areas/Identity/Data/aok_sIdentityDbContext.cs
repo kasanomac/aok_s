@@ -14,6 +14,8 @@ public class aok_sIdentityDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Semester> Semesters { get; set; } = default!;
     public DbSet<Department> Departments { get; set; } = default!;
     public DbSet<Major> Majors { get; set; } = default!;
+    public DbSet<Class> Classes { get; set; } = default!;
+    public DbSet<ClassMajor> ClassMajors { get; set; } = default!;
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

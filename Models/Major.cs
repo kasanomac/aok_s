@@ -8,7 +8,5 @@ public class Major
     public Department Department { get; set; } = default!;
 
     // 関連するClass（1つの専攻に複数の授業）
-    public ICollection<Class> Classes { get; set; } = new List<Class>();
-
-     public ICollection<ClassMajor> ClassMajors { get; set; }
+    public ICollection<ClassMajor> ClassMajors { get; set; }
 }

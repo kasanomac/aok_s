@@ -12,7 +12,7 @@ using aok_s.Areas.Identity.Data;
 namespace aok_s.Migrations
 {
     [DbContext(typeof(aok_sIdentityDbContext))]
-    [Migration("20250705080301_AddClassAndClassMajor")]
+    [Migration("20250709021346_AddClassAndClassMajor")]
     partial class AddClassAndClassMajor
     {
         /// <inheritdoc />
@@ -37,14 +37,9 @@ namespace aok_s.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("MajorId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("MajorId");
-
-                    b.ToTable("Class");
+                    b.ToTable("Classes");
                 });
 
             modelBuilder.Entity("ClassMajor", b =>
@@ -59,7 +54,7 @@ namespace aok_s.Migrations
 
                     b.HasIndex("MajorId");
 
-                    b.ToTable("ClassMajor");
+                    b.ToTable("ClassMajors");
                 });
 
             modelBuilder.Entity("Department", b =>
@@ -323,13 +318,6 @@ namespace aok_s.Migrations
                     b.ToTable("Semesters");
                 });
 
-            modelBuilder.Entity("Class", b =>
-                {
-                    b.HasOne("Major", null)
-                        .WithMany("Classes")
-                        .HasForeignKey("MajorId");
-                });
-
             modelBuilder.Entity("ClassMajor", b =>
                 {
                     b.HasOne("Class", "Class")
@@ -435,8 +423,6 @@ namespace aok_s.Migrations
             modelBuilder.Entity("Major", b =>
                 {
                     b.Navigation("ClassMajors");
-
-                    b.Navigation("Classes");
                 });
 
             modelBuilder.Entity("Semester", b =>
