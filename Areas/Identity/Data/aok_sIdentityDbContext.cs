@@ -12,24 +12,35 @@ public class aok_sIdentityDbContext : IdentityDbContext<IdentityUser>
     }
 
     public DbSet<Semester> Semesters { get; set; } = default!;
+    public DbSet<ClassFormation> ClassFormations { get; set; } = default!;
     public DbSet<Department> Departments { get; set; } = default!;
     public DbSet<Major> Majors { get; set; } = default!;
     public DbSet<Class> Classes { get; set; } = default!;
     public DbSet<ClassMajor> ClassMajors { get; set; } = default!;
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Department>()
-            .HasOne(d => d.Semester)
-            .WithMany(s => s.Departments)
-            .HasForeignKey(d => d.SemesterId);
+        // Semester → ClassFormation（1対多）
+        builder.Entity<ClassFormation>()
+            .HasOne(cf => cf.Semester)
+            .WithMany(s => s.ClassFormations)
+            .HasForeignKey(cf => cf.SemesterId);
 
+        // ClassFormation → Department（1対多）
+        builder.Entity<Department>()
+            .HasOne(d => d.ClassFormation)
+            .WithMany(cf => cf.Departments)
+            .HasForeignKey(d => d.ClassFormationId);
+
+        // Department → Major（1対多）
         builder.Entity<Major>()
             .HasOne(m => m.Department)
             .WithMany(d => d.Majors)
             .HasForeignKey(m => m.DepartmentId);
 
+        // ClassMajor（中間テーブル）
         builder.Entity<ClassMajor>()
             .HasKey(cm => new { cm.ClassId, cm.MajorId });
 
