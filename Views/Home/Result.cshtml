@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "検索結果";
+}
+
+<h1>検索結果</h1>
+
+@if (Model.Count == 0)
+{
+    <p>該当する授業は見つかりませんでした。</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>授業名</th>
+                <th>曜日・時限</th>
+                <th>担当</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ClassName</td>
+                <td>@item.Period</td>
+                <td>@item.Teacher</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<a asp-action="Index" asp-controller="Home">検索ページに戻る</a>

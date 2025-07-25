@@ -1,21 +1,81 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using aok_s.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using aok_s.Areas.Identity.Data;
 
 namespace aok_s.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly aok_sIdentityDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, aok_sIdentityDbContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
     public IActionResult Index()
     {
-        return View();
+        var semesters = _context.Semesters;
+
+        if (semesters == null || !semesters.Any())
+        {
+            ViewBag.Semesters = new SelectList(Enumerable.Empty<SelectListItem>());
+        }
+        else
+        {
+            ViewBag.Semesters = new SelectList(semesters, "Id", "SemesterName");
+            ViewBag.ClassFormations = new SelectList(_context.ClassFormations, "Id", "Name");
+        }
+
+        return View(); // Viewには何も渡さなくてもOK
+    }
+
+    public async Task<IActionResult> Result(int? semesterId, string? classFormationIds)
+    {
+        //Classテーブルからデータを取得
+        var classesQuery = _context.Classes
+            .Include(c => c.ClassMajors)
+                .ThenInclude(cm => cm.Major)
+                    .ThenInclude(m => m.Department)
+                        .ThenInclude(d => d.ClassFormation)
+                            .ThenInclude(cf => cf.Semester)
+            .AsQueryable();
+        
+        //semesterのプルダウンで選択された時の処理
+        if (semesterId.HasValue)
+        {
+            classesQuery = classesQuery.Where(c => c.ClassMajors
+                .Any(cm => cm.Major.Department.ClassFormation.SemesterId == semesterId));
+        }
+
+        // //classFormationのプルダウンで選択された時の処理
+        // if (classFormationId.HasValue)
+        // {
+        //     classesQuery = classesQuery.Where(c => c.ClassMajors
+        //         .Any(cm =>cm.Major.Department.ClassFormation.Id == classFormationId));
+        // }
+
+        if (!string.IsNullOrEmpty(classFormationIds))
+        {
+            var ids = classFormationIds
+                        .Split(',')
+                        .Select(id => int.Parse(id))
+                        .ToList();
+
+            classesQuery = classesQuery.Where(c => c.ClassMajors
+                .Any(cm => ids.Contains(cm.Major.Department.ClassFormationId)));
+                    
+        }
+
+        var semesters = await _context.Semesters.ToListAsync();
+        ViewBag.Semesters = new SelectList(semesters, "Id", "SemesterName");
+
+        return View(await classesQuery.ToListAsync());
     }
 
     public IActionResult Privacy()
