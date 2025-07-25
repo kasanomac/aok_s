@@ -35,7 +35,7 @@ public class HomeController : Controller
         return View(); // Viewには何も渡さなくてもOK
     }
 
-    public async Task<IActionResult> Result(int? semesterId, string? classFormationIds)
+    public async Task<IActionResult> Result(int? semesterId, string? classFormationIds, string? departmentIds)
     {
         //Classテーブルからデータを取得
         var classesQuery = _context.Classes
@@ -53,6 +53,11 @@ public class HomeController : Controller
                 .Any(cm => cm.Major.Department.ClassFormation.SemesterId == semesterId));
         }
 
+        //semesterのデータをプルダウンに渡す
+        var semesters = await _context.Semesters.ToListAsync();
+        ViewBag.Semesters = new SelectList(semesters, "Id", "SemesterName");
+
+
         // //classFormationのプルダウンで選択された時の処理
         // if (classFormationId.HasValue)
         // {
@@ -60,20 +65,25 @@ public class HomeController : Controller
         //         .Any(cm =>cm.Major.Department.ClassFormation.Id == classFormationId));
         // }
 
+        //classFormationのプルダウンで選択された時の処理
         if (!string.IsNullOrEmpty(classFormationIds))
         {
-            var ids = classFormationIds
-                        .Split(',')
-                        .Select(id => int.Parse(id))
-                        .ToList();
+            var ids = classFormationIds.Split(',').Select(id => int.Parse(id)).ToList();
 
             classesQuery = classesQuery.Where(c => c.ClassMajors
                 .Any(cm => ids.Contains(cm.Major.Department.ClassFormationId)));
                     
         }
 
-        var semesters = await _context.Semesters.ToListAsync();
-        ViewBag.Semesters = new SelectList(semesters, "Id", "SemesterName");
+        //Departmentのプルダウンで選択された時の処理
+        if (!string.IsNullOrEmpty(departmentIds))
+        {
+            var ids = departmentIds.Split(',').Select(id => int.Parse(id)).ToList();
+
+            classesQuery = classesQuery.Where(c => c.ClassMajors
+                .Any(cm => ids.Contains(cm.Major.DepartmentId)));
+                    
+        }
 
         return View(await classesQuery.ToListAsync());
     }
