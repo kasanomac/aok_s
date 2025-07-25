@@ -1,3 +1,4 @@
+namespace aok_s.Models;
 public class Class
 {
     public int Id { get; set; }

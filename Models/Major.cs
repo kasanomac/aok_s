@@ -1,3 +1,4 @@
+namespace aok_s.Models;
 public class Major
 {
     public required int Id { get; set; }

@@ -1,3 +1,4 @@
+namespace aok_s.Models;
 public class Department
 {
     public int Id { get; set; }
