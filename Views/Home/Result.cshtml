@@ -1,32 +1,44 @@
+@model IEnumerable<aok_s.Models.Class>
+@using aok_s.Models;
+
+
 @{
     ViewData["Title"] = "検索結果";
 }
 
 <h1>検索結果</h1>
 
-@if (Model.Count == 0)
+@if (Model.Count() == 0)
 {
-    <p>該当する授業は見つかりませんでした。</p>
+    <p>該当する授業は見つかりませんでした。検索条件を変更してください。</p>
 }
 else
 {
     <table>
         <thead>
             <tr>
+                <th>学期</th>
+                <th>授業形態</th>
                 <th>授業名</th>
                 <th>曜日・時限</th>
                 <th>担当</th>
             </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.ClassName</td>
-                <td>@item.Period</td>
-                <td>@item.Teacher</td>
-            </tr>
-        }
+            @foreach (var item in Model)
+            {
+                var firstClassMajor = item.ClassMajors.FirstOrDefault();
+                var classFormation = firstClassMajor?.Major?.Department?.ClassFormation;
+                var semester = classFormation?.Semester;
+                
+                <tr>
+                    <td>@(semester?.SemesterName ?? "不明")</td>
+                    <td>@(classFormation?.Name ?? "不明")</td>
+                    <td>@item.ClassName</td>
+                    <td>@item.Period</td>
+                    <td>@item.Teacher</td>
+                </tr>
+            }
         </tbody>
     </table>
 }

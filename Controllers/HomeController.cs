@@ -35,7 +35,7 @@ public class HomeController : Controller
         return View(); // Viewには何も渡さなくてもOK
     }
 
-    public async Task<IActionResult> Result(int? semesterId, string? classFormationIds, string? departmentIds)
+    public async Task<IActionResult> Result(int? semesterId, string? classFormationIds, string? departmentIds, string? majorIds, string className)
     {
         //Classテーブルからデータを取得
         var classesQuery = _context.Classes
@@ -71,8 +71,7 @@ public class HomeController : Controller
             var ids = classFormationIds.Split(',').Select(id => int.Parse(id)).ToList();
 
             classesQuery = classesQuery.Where(c => c.ClassMajors
-                .Any(cm => ids.Contains(cm.Major.Department.ClassFormationId)));
-                    
+                .Any(cm => ids.Contains(cm.Major.Department.ClassFormationId)));       
         }
 
         //Departmentのプルダウンで選択された時の処理
@@ -82,7 +81,21 @@ public class HomeController : Controller
 
             classesQuery = classesQuery.Where(c => c.ClassMajors
                 .Any(cm => ids.Contains(cm.Major.DepartmentId)));
-                    
+        }
+
+        //Majorのプルダウンで選択された時の処理
+        if (!string.IsNullOrEmpty(majorIds))
+        {
+            var ids = majorIds.Split(',').Select(id => int.Parse(id)).ToList();
+
+            classesQuery = classesQuery.Where(c => c.ClassMajors
+                .Any(cm => ids.Contains(cm.MajorId)));
+        }
+
+
+        if (!string.IsNullOrEmpty(className))
+        {
+            classesQuery = classesQuery.Where(c => c.ClassName.Contains(className));
         }
 
         return View(await classesQuery.ToListAsync());

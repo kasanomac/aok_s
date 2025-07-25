@@ -1,3 +1,4 @@
+namespace aok_s.Models;
 public class ClassMajor
 {
     public int ClassId { get; set; }

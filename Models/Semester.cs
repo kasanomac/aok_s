@@ -1,3 +1,4 @@
+namespace aok_s.Models;
 public class Semester
 {
     public int Id { get; set; } //SemesterId
