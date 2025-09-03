@@ -37,6 +37,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Result(int? semesterId, string? classFormationIds, string? departmentIds, string? majorIds, string className)
     {
+        var startTime = DateTime.Now;
         //Classテーブルからデータを取得
         var classesQuery = _context.Classes
             .Include(c => c.ClassMajors)
@@ -97,6 +98,10 @@ public class HomeController : Controller
         {
             classesQuery = classesQuery.Where(c => c.ClassName.Contains(className));
         }
+
+        var endTime = DateTime.Now;
+        var elapsed = (endTime - startTime).TotalMilliseconds;
+        Console.WriteLine($"検索時間: {elapsed} ms");
 
         return View(await classesQuery.ToListAsync());
     }
